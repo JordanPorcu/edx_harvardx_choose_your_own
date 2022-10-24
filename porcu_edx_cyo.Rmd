@@ -13,7 +13,7 @@ output:
 
 ## Overview
 
-This document is done within the framework of the *HarvardX PH125.9x Data Science : Capstone* certification. This project is an chosen subject : Diabetes Binary Classification.
+This document is done within the framework of the *HarvardX PH125.9x Data Science : Capstone* certification. This project is a chosen subject : Diabetes Binary Classification.
 
 The data set we are going to use can be found at https://www.kaggle.com/datasets/akshaydattatraykhare/diabetes-dataset.
 
@@ -45,7 +45,7 @@ The data set is available here : **[diabetes](https://www.kaggle.com/datasets/ak
 
 # Analysis
 
-On we downloaded the data set, we import it and we compute the first 5 lines :
+Once we downloaded the data set, we import it and we compute the first 5 lines :
 ```{r libraries importation,echo=FALSE,message=FALSE,warning=FALSE}
 if(!require(readr)) install.packages('readr') else library(readr)
 if(!require(tidyverse)) install.packages('tidyverse') else library(tidyverse)
@@ -147,7 +147,7 @@ From these elements, we can extract some information :
 - Data set is clean (0 NaN).
 - Approximately, a third of the patients are sick.
 - It seems that there is no aberration in variables distribution.
-- "Glucose,"BloodPressure" and "BMI" are close to a normal distribution (extreme values of "Glucose" tends to belie this information).
+- "Glucose,"BloodPressure" and "BMI" are close to a normal distribution (extreme values of "Glucose" tend to contradict this information).
 - There is no negative correlation between variables.
 - Correlation between variables and "Outcome" fluctuate from 0.07 (no correlation) to 0.48 (half correlated)
 
@@ -213,7 +213,7 @@ cm[3]$overall[1]
 cm[4]$byClass[7]
 ```
 
-For a first model, without any optimization, results are pretty positives. 
+For a first model, without any optimization, results are pretty positive. 
 Now we have the methodology to fit and predict with a model, we can create a *function* to get a tibble with metrics of the models, on the train and the test set. 
 
 ```{r model_function}
@@ -297,7 +297,7 @@ final_table <- final[order(desc(final$ratio)),]
 print(final_table)
 ```
 
-To understand this results table, the "diff" columns are the difference between the train and test value of the metric. It allows use to prevent an over fitting case.
+To understand this results table, the "diff" columns are the differences between the train and test values of the metric. It allows use to prevent an over fitting case.
 Moreover, the "ratio" columns is a homemade variable that gives us a view on which model is the best, according to the accuracy rate and the ratio.
 
 As a conclusion, except "rf" (Random Forest), they all have results on the same range. Since "glm" and "lda" don't have values we can tune, we need to choose between "glmboost" and "svmLinear". Let's tune them both to see which one will prevail.
@@ -307,7 +307,7 @@ As a conclusion, except "rf" (Random Forest), they all have results on the same 
 ## Tuning glmBoost
 
 With the glmBoost method, two values need to be set : *mstop* and *prune*.
-Prune is a "yes/no" value. By setting it to "yes", mstop will be automatically selected. But since we want to manually tune this up, we wil set it so "no".
+Prune is a "yes/no" value. By setting it to "yes", mstop will be automatically selected. But since we want to manually tune this up, we will set it as "no".
 
 About the *mstop* value, we will set a range from 50 to 500, by steps of 10.
 We create a new metric : ratio = accuracy * f1-score. This permits to find the best compromise between accuracy and f1-score by plotting ratio per mstop value. The highest the ratio, the better.
@@ -380,7 +380,7 @@ The accuracy is average, and the f1-score is not really higher the other models 
 
 ## Tuning svmLinear
 
-The svmLiner tuning will be done in the same way as the glmboost. The only exception is that there is only one value to tune, instead of two : C.
+The svmLiner tuning will be done the same way glmboost was. The only exception is that there is only one value to tune, instead of two : C.
 A range of 0.01 to 2 with a step of 0.02 is set.
 
 We, as previously, plot ratio (defined as accuracy*f1-score aswell) per C values.
@@ -444,7 +444,8 @@ svm_opt_result <- data.frame(tibble("model"    = "svmLinear",
                                     "f1_score" = round(cm_svm[4]$byClass[7],3)))
 print(svm_opt_result)
 ```
-Accuracy and F1-score are a little better than the glmboost model. We will analayze the results ine the next part.
+
+Accuracy and F1-score are a little better than the glmboost model. We will analyze the results ine the next part.
 
 \newpage 
 
@@ -463,7 +464,7 @@ final_results <- bind_rows(glm_opt_result,svm_opt_result) %>% knitr::kable()
 print(final_results)
 ```
 
-Among all the models we tried, svmLinear tends to be the best. However, we can see that, unlike glmBoost that receive a growth in its metrics through tuning, svmLinear remains the same. Now we can recreate a svmLinear model from scratch to get all the information we can extract on this model performance.
+Among all the models we've tried, svmLinear tends to be the best. However, we can see that, unlike glmBoost that receive a growth in its metrics through tuning, svmLinear remains the same. Now we can recreate a svmLinear model from scratch to get all the information we can extract on this model performance.
 
 ```{r svm_final, echo=FALSE}
 svm_fit <- train(Outcome~., data=train,trControl=ctrl,method="svmLinear")
@@ -487,7 +488,7 @@ Results on the validation set are clearly better. Let's analyze it metric per me
 - accuracy : we saw this one earlier, it is higher than what we got first, making this model stronger.
 - F1-score : it remains almost the same, so we can't conclude it gets better.
 - Precision & Recall : in fact, F1-score is a sort of mean of precision and recall, that's why f1-score is worth studying.
-- Sensitivity : is at a good level, but since it is defined as "true positive rate" and we face a medical case, it remains a bit law.
+- Sensitivity : is at a good level, but since it is defined as "true positive rate" and we face a medical case, it remains a bit low.
 - specificity : this one is really high, it is defined as "true false rate" which is convenient in this case.
 
 To understand the last two better, we can translate, for this project, the specificity as the "proportion of really sick people among all the people who were diagnosed with diabetes" and specificity as "proportion of people that are really healthy among all the ones who were diagnosed negative". Now we see why a high sensibility is mandatory in a medical study : we cannot let people get misdiagnosed. Specificity is important as well because we don't want healthy people to take a difficult treatment because they also were misdiagnosed.
@@ -508,7 +509,7 @@ We can explain this with few points :
 
 - the data set is usable, but for a really precise project, we would need more data
 - the people targeted by this data set is really niche since it only concerns women from a specific area
-- as we saw, variables are not really correlated to the outcome, which makes our machine learning models results more difficult to get high
+- as we saw, variables are not really correlated to the outcome, which makes it harder for our machine learning to get higher results
 
 Finally, to have a better prediction model, we could have used Deep Learning and Neural Networks, but it is for an other level of data science and it is get outside of the machine learning field.
 

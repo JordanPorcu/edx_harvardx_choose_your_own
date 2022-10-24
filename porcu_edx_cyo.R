@@ -1,24 +1,12 @@
-if(!require(readr)) install.packages('readr') else
-if(!require(tidyverse)) install.packages('tidyverse') else 
-if(!require(dplyr)) install.packages('dplyr') else
-if(!require(caret)) install.packages('caret') else
-if(!require(corrplot)) install.packages('corrplot') else
-if(!require(ggplot2)) install.packages('ggplot2') else 
-if(!require(forecast)) install.packages('forecast') else 
-if(!require(rpart)) install.packages('rpart') else
-if(!require(rpart.plot)) install.packages('rpart.plot') else
-if(!require(GGally)) install.packages('GGally') else library(GGally)
-
-library(readr)
-library(tidyverse)
-library(dplyr)
-library(caret)
-library(corrplot)
-library(ggplot2)
-library(forecast)
-library(rpart)
-library(rpart.plot)
-library(GGally)
+if(!require(readr)) install.packages('readr') else library(readr)
+if(!require(tidyverse)) install.packages('tidyverse') else library(tidyverse)
+if(!require(dplyr)) install.packages('dplyr') else library(dplyr)
+if(!require(caret)) install.packages('caret') else library(caret)
+if(!require(corrplot)) install.packages('corrplot') else library(corrplot)
+if(!require(ggplot2)) install.packages('ggplot2') else library(ggplot2)
+if(!require(rpart)) install.packages('rpart') else library(rpart)
+if(!require(rpart.plot)) install.packages('rpart.plot') else library(rpart.plot)
+if(!require(reshape2)) install.packages('reshape2') else library(reshape2)
 
 # Link to download the dataset
 # https://www.kaggle.com/datasets/akshaydattatraykhare/diabetes-dataset
@@ -179,7 +167,6 @@ final_table <- final[order(desc(final$ratio)),] %>% knitr::kable()
 print(final_table)
 
 
-# best model : glm. Let's tune it)
 # prune = no -> so we can see which mstop is the best
 accuracies <- list()
 f1_scores <- list()
@@ -294,7 +281,7 @@ svm_opt_result <- data.frame(tibble("model"    = "svmLinear",
 print(svm_opt_result)
 
 
-# svm 
+# svm tuning
 svm_fit <- train(Outcome~., data=train,trControl=ctrl,method="svmLinear")
 svm_predict <- predict(svm_fit,validation)
 svm_cm <- confusionMatrix(svm_predict,validation$Outcome,
@@ -338,9 +325,3 @@ feature_importance %>%
         axis.text.x = element_text(angle=45
                                    ,hjust=1))+
   ggtitle("Features importance")
-
-
-ggplot(diabetes,aes()) +    # Draw each column as histogram
-  geom_histogram() + 
-  facet_wrap(~ .,scales = "free")
-
